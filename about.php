@@ -27,19 +27,20 @@ $users = [
                 <tr>
                     <th>#</th>
                     <th>Name</th>
+                    <?php if( $con ):?>
                     <th>Family</th>
+                    <?php endif;?>
                 </tr>
             </thead>
             <tbody>
                 <?php
-                foreach( $users as $index => $user ){?>
+                foreach( $users as $index => $user ):?>
                     <tr>
-                        <td><?php echo $index+1;?></td>
-                        <td><?php echo $user['name'];?></td>
-                        <td><?php echo $user['family'];?></td>
+                        <td><?= $index+1;?></td>
+                        <td><?= $user['name'];?></td>
+                        <td><?= $user['family'];?></td>
                     </tr>
-                <?php }
-                ?>
+                <?php endforeach;?>
             </tbody>
         </table>
     </div>
