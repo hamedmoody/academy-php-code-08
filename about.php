@@ -1,7 +1,7 @@
 <?php
 $users = [
     ['name' => 'ali', 'family'=>'moodi'],
-    ['name' => 'reza', 'family' => 'razavi', 'gold' => true],
+    ['name' => 'reza', 'family' => 'razavi'],
     ['name' => 'Hamed', 'family' => 'Alavi'],
     ['name' => 'Javad', 'family' => 'Molavi'],
 ];
@@ -32,20 +32,13 @@ $users = [
             </thead>
             <tbody>
                 <?php
-                foreach( $users as $index => $user ){
-                    $name   = $user['name'];
-                    $family = $user['family'];
-                    $row    = $index + 1;
-                    $class  = '';
-                    if( isset( $user['gold'] ) ){
-                        $class = 'active';
-                    }
-                    echo '<tr class="' . $class . '">';
-                        echo '<td>' . $row . '</td>';
-                        echo '<td>' . $name . '</td>';
-                        echo '<td>' . $family . '</td>';
-                    echo '</tr>';
-                }
+                foreach( $users as $index => $user ){?>
+                    <tr>
+                        <td><?php echo $index+1;?></td>
+                        <td><?php echo $user['name'];?></td>
+                        <td><?php echo $user['family'];?></td>
+                    </tr>
+                <?php }
                 ?>
             </tbody>
         </table>
