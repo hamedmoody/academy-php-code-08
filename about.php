@@ -36,9 +36,9 @@ $users = [
                 <?php
                 foreach( $users as $index => $user ):?>
                     <tr>
-                        <td><?= $index+1;?></td>
-                        <td><?= $user['name'];?></td>
-                        <td><?= $user['family'];?></td>
+                        <td><?php echo $index+1;?></td>
+                        <td><?php echo $user['name'];?></td>
+                        <td><?php echo $user['family'];?></td>
                     </tr>
                 <?php endforeach;?>
             </tbody>
