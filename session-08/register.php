@@ -1,16 +1,23 @@
 <?php
-date_default_timezone_set( 'Asia/Tehran' );
+require( 'init.php' );
+
 $date = date( 'Y-m-d H:i:s' );
-
-$db_connection = mysqli_connect( 'localhost', 'root', '', 'my_db' );
-
 $username = $_POST['username'];
 $password = $_POST['password'];
 
+
+$tmp_avatar     = $_FILES['avatar']['tmp_name'];
+$avatar_target  = 'uploads/' . rand( 10000000, 99999999 ) . '-' . $_FILES['avatar']['name'];
+$moved          = move_uploaded_file( $tmp_avatar, $avatar_target );
+if( ! $moved ){
+    die('Not Move');
+}
+
+
 $sql            = "INSERT INTO users
-( username, password, created_at )
+( username, password, avatar, created_at )
 VALUES
-( '$username', '$password', '$date' )";
+( '$username', '$password', '$avatar_target' , '$date' )";
 
 //die( $sql );
 
