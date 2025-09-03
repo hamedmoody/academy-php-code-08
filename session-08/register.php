@@ -19,11 +19,10 @@ $sql            = "INSERT INTO users
 VALUES
 ( '$username', '$password', '$avatar_target' , '$date' )";
 
-//die( $sql );
-
 $result = mysqli_query( $db_connection, $sql );
 
 if( $result ){
+    echo mysqli_insert_id( $db_connection );
     echo 'کاربر ثبت شد';
 }else{
     echo 'خطا در ثبت کاربر';
