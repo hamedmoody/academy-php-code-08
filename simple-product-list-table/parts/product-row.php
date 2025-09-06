@@ -4,10 +4,14 @@ if( $product['price'] ){
     $discount = ( $product['price'] - $product['sale_price'] ) / $product['price'] * 100;
     $discount = round( $discount );
 }
-$status_label = $product_statuses[$product['status']];
+
+$status_key = $product['status'];
+
+$status_label = $product_statuses[$status_key];
+$row = $offset + $index + 1;
 ?>
 <tr>
-    <td><?php echo $index+1;?></td>
+    <td><?php echo $row;?></td>
     <td>
     <div class="table-flex-col">
         <img class="product-thumbnail" src="<?php echo $product['thumbnail'];?>"
@@ -18,8 +22,8 @@ $status_label = $product_statuses[$product['status']];
     </div>
     </td>
     <td>
-        <?php if( $product['price'] != $product['sale_price'] ):?>
-        <del><?php echo number_format( $product['price']/10 );?></del>
+        <?php if( $discount ):?>
+            <del><?php echo number_format( $product['price']/10 );?></del>
         <?php endif;?>
         <ins><?php echo number_format( $product['sale_price']/10 );?></ins>
     </td>
@@ -30,7 +34,7 @@ $status_label = $product_statuses[$product['status']];
         <?php echo $product['stock'];?>
     </td>
     <td>
-        <div class="product-status <?php echo $product['status'];?>">
+        <div class="product-status <?php echo $status_key;?>">
             <?php echo $status_label;?>
         </div>
     </td>
