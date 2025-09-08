@@ -5,15 +5,42 @@ $page   = isset( $_GET['page'] ) ? intval( $_GET['page'] ) : 1;
 $limit  = 20;
 $offset = ( $page - 1 ) * $limit;
 
+$where  = ' WHERE 1 = 1 ';
+$args   = [];
+
+$search = isset( $_GET['search'] ) ? $_GET['search'] : '';
+if( $search ){
+  $where.= " AND title LIKE '%$search%' ";
+  $args['search'] = $search;
+}
+
+$price_from = isset( $_GET['price_from'] ) ? intval( $_GET['price_from'] ) : 0;
+if( $price_from ){
+  $where.= " AND price >= $price_from ";
+  $args['price_from'] = $price_from;
+}
+
+$price_to = isset( $_GET['price_to'] ) ? intval( $_GET['price_to'] ) : 0;
+if( $price_to ){
+  $where.= " AND price <= $price_to ";
+  $args['price_to'] = $price_to;
+}
+
+$status = isset( $_GET['status'] ) ? $_GET['status'] : '';
+if( $status ){
+  $where.= " AND status = '$status'";
+  $args['status'] = $status;
+}
+
 //create list sql
-$sql = "SELECT * FROM products  ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
+$sql = "SELECT * FROM products $where ORDER BY created_at DESC LIMIT $limit OFFSET $offset";
 
 //Get data
 $result   = mysqli_query( $db, $sql );
 $products = mysqli_fetch_all( $result, MYSQLI_ASSOC );
 
 //Get total item count
-$count_sql = "SELECT COUNT(*) AS total FROM products";
+$count_sql = "SELECT COUNT(*) AS total FROM products $where";
 $result = mysqli_query( $db, $count_sql );
 $result = mysqli_fetch_assoc( $result );
 $total = $result['total'];
@@ -43,28 +70,29 @@ $page_count = ceil( $total / $limit );
         </a>
       </div>
     </header>
-    <div class="table-filter">
+    <form action="" class="table-filter">
       <div class="filter">
         <label for="search">جستجو</label>
-        <input type="search" id="search" name="search" placeholder="جستجو" value="" class="form-control">
+        <input type="search" id="search" name="search" placeholder="جستجو" value="<?php echo $search;?>" class="form-control">
       </div>
       <div class="filter">
         <label for="status">وضعیت</label>
         <select name="status" id="status" class="form-control">
           <option value=""> - همه - </option>
-          <option value="publish">درحال فروش</option>
-          <option value="expire">توقف فروش</option>
-          <option value="draft">پیش نویس</option>
-          <option value="preslae">پیشفروش</option>
+          <?php foreach( $product_statuses as $key => $label ):?>
+            <option value="<?php echo $key;?>" <?php if( $key == $status ){echo 'selected';}?>>
+              <?php echo $label;?>
+            </option>
+          <?php endforeach;?>
         </select>
       </div>
       <div class="filter filter-price">
         <label for="search">قیمت</label>
         <div>
           از
-          <input type="search" name="price_from" placeholder="از" value="" class="form-control">
+          <input type="search" name="price_from" placeholder="از" value="<?php echo $price_from;?>" class="form-control">
           تا
-          <input type="search" name="price_to" placeholder="تا" value="" class="form-control">
+          <input type="search" name="price_to" placeholder="تا" value="<?php echo $price_to;?>" class="form-control">
         </div>
       </div>
       <div class="filter btn-filter">
@@ -72,7 +100,7 @@ $page_count = ceil( $total / $limit );
           فیلتر کردن
         </button>
       </div>
-    </div><!--.table-filter-->
+    </form><!--.table-filter-->
     <table class="table">
       <thead>
         <tr>
@@ -141,11 +169,13 @@ $page_count = ceil( $total / $limit );
         <?php echo $page_count;?>
       </div>
       <div class="pagination">
-        <a href="#" class="prev">
-          <svg xmlns="http://www.w3.org/2000/svg" width="8.597" height="17.337" viewBox="0 0 8.597 17.337">
-            <path id="arrow-right-3" d="M16.012,20.67a.742.742,0,0,0,.53-.22.754.754,0,0,0,0-1.06l-6.52-6.52a1.231,1.231,0,0,1,0-1.74l6.52-6.52a.75.75,0,0,0-1.06-1.06l-6.52,6.52a2.724,2.724,0,0,0-.8,1.93,2.683,2.683,0,0,0,.8,1.93l6.52,6.52A.786.786,0,0,0,16.012,20.67Z" transform="translate(-8.162 -3.333)" fill="#292d32"/>
-          </svg>
-        </a>
+        <?php if( $page > 1 ):?>
+          <a href="product-list.php?page=<?php echo $page - 1;?>&<?php echo http_build_query( $args );?>" class="prev">
+            <svg xmlns="http://www.w3.org/2000/svg" width="8.597" height="17.337" viewBox="0 0 8.597 17.337">
+              <path id="arrow-right-3" d="M16.012,20.67a.742.742,0,0,0,.53-.22.754.754,0,0,0,0-1.06l-6.52-6.52a1.231,1.231,0,0,1,0-1.74l6.52-6.52a.75.75,0,0,0-1.06-1.06l-6.52,6.52a2.724,2.724,0,0,0-.8,1.93,2.683,2.683,0,0,0,.8,1.93l6.52,6.52A.786.786,0,0,0,16.012,20.67Z" transform="translate(-8.162 -3.333)" fill="#292d32"/>
+            </svg>
+          </a>
+        <?php endif;?>
         <?php for( $i = 1; $i <= $page_count; $i++ ):?>
           <?php
           $diff = abs( $i - $page );
@@ -156,22 +186,28 @@ $page_count = ceil( $total / $limit );
           <?php if( $i == $page ):?>
             <span><?php echo $i;?></span>
           <?php else:?>
-            <a href="product-list.php?page=<?php echo $i;?>">
+            <a href="product-list.php?page=<?php echo $i;?>&<?php echo http_build_query( $args );?>">
               <?php echo $i;?>
             </a>
           <?php endif;?>
         <?php endfor;?>
+        <?php if( $page < $page_count - 3 ):?>
         <a href="#">
           ...
         </a>
-        <a href="#">
-          23
+        <?php endif;?>
+        <?php if( $page < $page_count - 2 ):?>
+        <a href="product-list.php?page=<?php echo $page_count;?>&<?php echo http_build_query( $args );?>">
+          <?php echo $page_count;?>
         </a>
-        <a href="#" class="next">
-          <svg xmlns="http://www.w3.org/2000/svg" width="8.597" height="17.337" viewBox="0 0 8.597 17.337">
-            <path id="arrow-right-3" d="M8.91,20.67a.742.742,0,0,1-.53-.22.754.754,0,0,1,0-1.06l6.52-6.52a1.231,1.231,0,0,0,0-1.74L8.38,4.61A.75.75,0,1,1,9.44,3.55l6.52,6.52a2.724,2.724,0,0,1,.8,1.93,2.683,2.683,0,0,1-.8,1.93L9.44,20.45A.786.786,0,0,1,8.91,20.67Z" transform="translate(-8.162 -3.333)" fill="#292d32"/>
-          </svg>
-        </a>
+        <?php endif;?>
+        <?php if( $page < $page_count ):?>
+          <a href="product-list.php?page=<?php echo $page + 1;?>" class="next">
+            <svg xmlns="http://www.w3.org/2000/svg" width="8.597" height="17.337" viewBox="0 0 8.597 17.337">
+              <path id="arrow-right-3" d="M8.91,20.67a.742.742,0,0,1-.53-.22.754.754,0,0,1,0-1.06l6.52-6.52a1.231,1.231,0,0,0,0-1.74L8.38,4.61A.75.75,0,1,1,9.44,3.55l6.52,6.52a2.724,2.724,0,0,1,.8,1.93,2.683,2.683,0,0,1-.8,1.93L9.44,20.45A.786.786,0,0,1,8.91,20.67Z" transform="translate(-8.162 -3.333)" fill="#292d32"/>
+            </svg>
+          </a>
+        <?php endif;?>
       </div><!--.pagination-->
     </div><!--.table-footer-->
 

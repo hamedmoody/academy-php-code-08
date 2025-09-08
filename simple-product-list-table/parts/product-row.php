@@ -17,7 +17,13 @@ $row = $offset + $index + 1;
         <img class="product-thumbnail" src="<?php echo $product['thumbnail'];?>"
             alt="">
         <p class="product-title">
-        <?php echo $product['title'];?>
+        <?php
+        if( $search ){
+            echo str_replace( $search, "<mark>$search</mark>", $product['title'] );
+        }else{
+            echo $product['title'];
+        }
+        ?>
         </p>
     </div>
     </td>
