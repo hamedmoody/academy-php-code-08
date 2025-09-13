@@ -9,3 +9,5 @@ $product_statuses = [
     'draft'     => 'پیش نویس',
     'presale'   => 'پیش فروش'
 ];
+
+include( 'libs/jdf.php' );

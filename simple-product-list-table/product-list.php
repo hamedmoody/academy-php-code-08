@@ -65,7 +65,7 @@ $page_count = ceil( $total / $limit );
         <p>از این بخش میتوانید محصولات فعلی را ویرایش یا محصول جدید ثبت کنید</p>
       </div>
       <div class="table-button">
-        <a href="#" class="btn btn-secondary">
+        <a href="product-edit.php" class="btn btn-secondary">
           + ثبت محصول جدید
         </a>
       </div>

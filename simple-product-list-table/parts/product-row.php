@@ -9,6 +9,7 @@ $status_key = $product['status'];
 
 $status_label = $product_statuses[$status_key];
 $row = $offset + $index + 1;
+
 ?>
 <tr>
     <td><?php echo $row;?></td>
@@ -45,11 +46,13 @@ $row = $offset + $index + 1;
         </div>
     </td>
     <td>
-        1405/08/19
+        <p title="<?php echo jdate( 'H:i:s', strtotime( $product['created_at'] ) );?>">
+            <?php echo jdate( 'Y/m/d', strtotime( $product['created_at'] ) );?>
+        </p>
     </td>
     <td>
         <div class="table-flex-col">
-            <a href="#" class="btn-icon edit-product">
+            <a href="product-edit.php?id=<?php echo $product['ID'];?>" class="btn-icon edit-product">
             <svg xmlns="http://www.w3.org/2000/svg" width="17.502" height="18.094" viewBox="0 0 17.502 18.094">
                 <g id="edit-2" transform="translate(-3.252 -1.426)">
                 <path id="Path_4" data-name="Path 4" d="M5.54,19.52a2.291,2.291,0,0,1-1.59-.6,2.382,2.382,0,0,1-.68-2.03l.37-3.24a3.605,3.605,0,0,1,.87-1.86L12.72,3.1C14.77.93,16.91.87,19.08,2.92s2.23,4.19.18,6.36l-8.21,8.69a3.605,3.605,0,0,1-1.81.97l-3.22.55C5.85,19.5,5.7,19.52,5.54,19.52ZM15.93,2.91a3.055,3.055,0,0,0-2.12,1.2L5.6,12.81a2.309,2.309,0,0,0-.47,1l-.37,3.24a.879.879,0,0,0,.22.77.9.9,0,0,0,.78.18l3.22-.55a2.234,2.234,0,0,0,.97-.52l8.21-8.69C19.4,6.92,19.85,5.7,18.04,4A3.162,3.162,0,0,0,15.93,2.91Z" fill="#292d32"/>
