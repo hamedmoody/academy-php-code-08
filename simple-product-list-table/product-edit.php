@@ -15,14 +15,54 @@ if( isset( $_POST['save'] ) ){
     $stock          = $_POST['stock'];
     $status         = $_POST['status'];
     $date           = date( 'Y-m-d H:i:s' );
+    $thumbnail_path = '';
+
+
+    $allowed_types = [
+        'image/jpeg', 'image/png', 'image/webp'
+    ];
+    $allowed_extensions = [
+        'jpg', 'jpeg', 'png', 'webp'
+    ];
+
+    //Upload
+    $file           = $_FILES['thumbnail'];
+    $mime_type      = $file['type'];
+    $name           = $file['name'];
+    $info           = pathinfo( $name );
+    //JPG => jpg
+    if(
+        in_array( $mime_type, $allowed_types )
+        &&
+        in_array( strtolower( $info['extension'] ), $allowed_extensions )
+    ){
+
+        $name           = $info['filename'] . '-' . rand( 100000, 999999 ) . '.' . $info['extension'];
+        $upload_dir     = 'uploads/' . date( 'Y/m/' );
+        if( ! file_exists( $upload_dir )  ){
+            //Make dir
+            mkdir( $upload_dir, 0777, true );
+        }
+        $destination_file = $upload_dir . $name;
+        move_uploaded_file( $file['tmp_name'], $destination_file );
+        $thumbnail_path = $destination_file;
+
+    }
+    
 
     if( $id ){
+
+        if( ! $thumbnail_path ){
+            $thumbnail_path = $_POST['thumbnail'];
+        }
+
         //update query
         $sql = "
         UPDATE products
             SET
                 title = '$title',
                 description = '$description',
+                thumbnail = '$thumbnail_path',
                 price = $price,
                 sale_price = $sale_price,
                 status = '$status',
@@ -46,7 +86,7 @@ if( isset( $_POST['save'] ) ){
         INSERT INTO products
             (title, description, thumbnail, price, sale_price, stock, status, created_at, updated_at)
             VALUES
-            ('$title', '$description', '', $price, $sale_price, $stock, '$status', '$date', '$date')
+            ('$title', '$description', '$thumbnail_path', $price, $sale_price, $stock, '$status', '$date', '$date')
         ";
         
         $result = mysqli_query( $db, $sql );
@@ -77,6 +117,7 @@ if( $id ){
     $result     = mysqli_query( $db, $sql );
     $prodcut    = mysqli_fetch_assoc( $result );
     $title      = $prodcut['title'];
+    $thumbnail_path = $prodcut['thumbnail'];
     $description = $prodcut['description'];
     $price      = $prodcut['price'];
     $sale_price      = $prodcut['sale_price'];
@@ -122,7 +163,7 @@ if( $id ){
         </div>
         <?php endif;?>
 
-        <form action="" method='POST' id="product-register">
+        <form action="" method='POST' id="product-register" enctype="multipart/form-data">
             <div class="form-right">
                 <div class="form-group">
                     <label for="title">نام محصول</label>
@@ -137,9 +178,12 @@ if( $id ){
                 <div class="form-group">
                     <label for="thumbnail">تصویر شاخص محصول</label>
                     <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg,image/png">
+                    <input type="hidden" name="thumbnail" value="<?php echo $thumbnail_path;?>">
                 </div>
-                <img src="https://dkstatics-public.digikala.com/digikala-products/e89295ab7e1e907808099079ac4ee49a67c771c0_1704658598.jpg"
-                     alt="" class="thumbnail-preview">
+                <?php if( $thumbnail_path ):?>
+                <img src="<?php echo $thumbnail_path;?>"
+                     alt="" class="thumbnail-preview"/>
+                <?php endif;?>
                 <div class="form-group">
                     <label for="price">قیمت</label>
                     <input type="number" name="price" id="price" class="form-control" value="<?php echo $price;?>" step="1">
