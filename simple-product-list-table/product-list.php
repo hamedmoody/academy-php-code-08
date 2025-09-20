@@ -1,5 +1,13 @@
 <?php
 include( 'init.php' );
+
+if( isset( $_GET['action'] ) && $_GET['action'] == 'delete' && isset( $_GET['id'] ) ){
+  $id = intval( $_GET['id'] );
+  $sql = "DELETE FROM products WHERE ID = $id";
+  $result = mysqli_query( $db, $sql );
+}
+
+
 //( Page - 1 ) * $limit
 $page   = isset( $_GET['page'] ) ? intval( $_GET['page'] ) : 1;
 $limit  = 20;

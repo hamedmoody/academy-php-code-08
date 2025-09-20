@@ -75,6 +75,11 @@ if( isset( $_POST['save'] ) ){
         $updated = mysqli_query( $db, $sql );
 
         if( $updated ){
+
+            $url = 'http://localhost/academy/simple-product-list-table/product-edit.php?status=updated&id=' . $id;
+            header( 'location: ' . $url );
+            exit;
+
             $success = 'محصول ویرایش شد';
         }else{
             $error = 'خطا در بروزرسانی';
@@ -92,6 +97,13 @@ if( isset( $_POST['save'] ) ){
         $result = mysqli_query( $db, $sql );
 
         if( $result ){
+
+
+            $prodcut_id = mysqli_insert_id( $db );
+            $url = 'http://localhost/academy/simple-product-list-table/product-edit.php?status=inserted&id=' . $prodcut_id;
+            header( 'location: ' . $url );
+            exit;
+
             $success = 'ثبت انجام شد';
         }else{
             $error = 'خطا در ثبت محصول';
@@ -110,7 +122,16 @@ $price          = 0;
 $sale_price     = 0;
 $status         = 'pending';
 $stock          = 0;
+$thumbnail_path = '';
 
+
+if( isset( $_GET['status'] ) && $_GET['status'] == 'inserted' ){
+    $success = 'محصول با موفقیت ثبت شد';
+}
+
+if( isset( $_GET['status'] ) && $_GET['status'] == 'updated' ){
+    $success = 'محصول با موفقیت بروز شد';
+}
 
 if( $id ){
     $sql        = "SELECT * FROM products WHERE ID = $id";
@@ -178,11 +199,12 @@ if( $id ){
                 <div class="form-group">
                     <label for="thumbnail">تصویر شاخص محصول</label>
                     <input type="file" id="thumbnail" name="thumbnail" accept="image/jpeg,image/png">
-                    <input type="hidden" name="thumbnail" value="<?php echo $thumbnail_path;?>">
+                    <input type="text" id="thumb_input" name="thumbnail" value="<?php echo $thumbnail_path;?>">
                 </div>
                 <?php if( $thumbnail_path ):?>
-                <img src="<?php echo $thumbnail_path;?>"
-                     alt="" class="thumbnail-preview"/>
+                    <img src="<?php echo $thumbnail_path;?>"
+                        alt="" class="thumbnail-preview"/>
+                        <button type="button" id="remove-image">Remove Image</button>
                 <?php endif;?>
                 <div class="form-group">
                     <label for="price">قیمت</label>
@@ -218,5 +240,20 @@ if( $id ){
     </div>
     <script src="js/jquery-3.7.1.min.js"></script>
     <script src="js/script.js"></script>
+    <script>
+        const btn_remove = document.querySelector('#remove-image');
+        
+        btn_remove.addEventListener('click', function(e){
+            e.preventDefault();
+            if( ! confirm('Sure?') ){
+                return;
+            }
+
+            document.querySelector("#thumb_input").value = '';
+            document.querySelector(".thumbnail-preview").style.display = 'none';
+            this.style.display = 'none';
+
+        } );
+    </script>
 </body>
-</html>
+</html
