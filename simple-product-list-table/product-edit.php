@@ -50,70 +50,6 @@ if( isset( $_POST['save'] ) ){
     }
     
 
-    if( $id ){
-
-        if( ! $thumbnail_path ){
-            $thumbnail_path = $_POST['thumbnail'];
-        }
-
-        //update query
-        $sql = "
-        UPDATE products
-            SET
-                title = '$title',
-                description = '$description',
-                thumbnail = '$thumbnail_path',
-                price = $price,
-                sale_price = $sale_price,
-                status = '$status',
-                stock = $stock,
-                updated_at = '$date'
-            WHERE
-                ID = $id
-        ";
-        
-        $updated = mysqli_query( $db, $sql );
-
-        if( $updated ){
-
-            $url = 'http://localhost/academy/simple-product-list-table/product-edit.php?status=updated&id=' . $id;
-            header( 'location: ' . $url );
-            exit;
-
-            $success = 'محصول ویرایش شد';
-        }else{
-            $error = 'خطا در بروزرسانی';
-        }
-
-    }else{
-
-        $sql            = "
-        INSERT INTO products
-            (title, description, thumbnail, price, sale_price, stock, status, created_at, updated_at)
-            VALUES
-            ('$title', '$description', '$thumbnail_path', $price, $sale_price, $stock, '$status', '$date', '$date')
-        ";
-        
-        $result = mysqli_query( $db, $sql );
-
-        if( $result ){
-
-
-            $prodcut_id = mysqli_insert_id( $db );
-            $url = 'http://localhost/academy/simple-product-list-table/product-edit.php?status=inserted&id=' . $prodcut_id;
-            header( 'location: ' . $url );
-            exit;
-
-            $success = 'ثبت انجام شد';
-        }else{
-            $error = 'خطا در ثبت محصول';
-        }
-
-
-    }
-
-    
-
 }
 
 $title          = '';
@@ -235,25 +171,15 @@ if( $id ){
                     ثبت محصول
                     <?php endif;?>
                 </button>
+                <input type="hidden" name="ID" value="<?php echo $id;?>">
             </div>
         </form>
     </div>
     <script src="js/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="js/script.js"></script>
     <script>
-        const btn_remove = document.querySelector('#remove-image');
         
-        btn_remove.addEventListener('click', function(e){
-            e.preventDefault();
-            if( ! confirm('Sure?') ){
-                return;
-            }
-
-            document.querySelector("#thumb_input").value = '';
-            document.querySelector(".thumbnail-preview").style.display = 'none';
-            this.style.display = 'none';
-
-        } );
     </script>
 </body>
 </html

@@ -1,3 +1,5 @@
 <?php
 date_default_timezone_set('Asia/Tehran');
-print_r( $_GET );
+sleep( 2 );
+http_response_code( 500 );
+echo 'خطا در ثب داده';

@@ -1,14 +1,32 @@
-jQuery(document).ready(function( $ ){
+$(document).ready(function(  ){
 
-    /*$('#thumbnail').change( function(e){
+    $('#product-register').submit(function(e){
         e.preventDefault();
-        if (e.target.files && e.target.files[0]) {
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                $('.thumbnail-preview').attr( 'src', e.target.result );
-            }
-            reader.readAsDataURL( e.target.files[0] );
-        }
-    } );*/
+        
+        $.ajax({
+            method  : 'POST',
+            data    : $(this).serialize(),
+            url     : 'ajax-save.php',
+            beforeSend: function(){
 
+            },
+            complete: function(){
+
+            },
+            error: function( result ){
+                Swal.fire({
+                    title: result.responseText,
+                    icon: "error",
+                  });
+            },
+            success: function( result ){
+                Swal.fire({
+                    title: result,
+                    icon: "success",
+                  });
+            },
+        });
+        
+    });
+    
 });
