@@ -7,33 +7,19 @@
 </head>
 <body>
     <form action="" class="frm">
-        <input type="text" name="fname" id="fname">
-        <input type="text" name="lname" id="lname">
-        <input type="text" name="age" id="age">
-        <button>Click here</button>
-    </form>
-    <br>
-    <div class="test">
-        ...
-    </div>
-    <hr>
-    <form action="" class="frm">
-        <input type="text" name="fname" id="fname">
-        <input type="text" name="lname" id="lname">
-        <input type="text" name="age" id="age">
         <button>Click here</button>
     </form>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="jquery-3.7.1.js"></script>
     <script>
+
+        var res;
         
         $('form').submit(function(e){
             e.preventDefault();
             let btn = $(this).find('button');
             $.ajax({
-                url     : 'test.php',
-                method  : 'post',
-                data    : $(this).serialize(),
+                url     : 'https://tools.daneshjooyar.com/api/v1/currencies',
                 beforeSend: function(){
                     console.log('beFore Send');
                     $(btn).text('Loading...');
@@ -42,16 +28,18 @@
                     $(btn).text( 'Click Here' );
                 },
                 error: function(){
-                    Swal.fire({
-                        title: 'خطا رخ داده است',
-                        icon: "error",
-                    });
+                    // Swal.fire({
+                    //     title: 'خطا رخ داده است',
+                    //     icon: "error",
+                    // });
                 },
                 success : function( result ){
                     console.log( result );
-
+                    res = result;
+                    // console.log( result.name );
+                    // console.log( result.age );
                     Swal.fire({
-                        title: result,
+                        title: result.data.golds[1].price,
                         icon: "success",
                     });
 

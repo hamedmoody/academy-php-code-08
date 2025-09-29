@@ -180,6 +180,11 @@ if( $id ){
     <script src="js/script.js"></script>
     <script>
         
+        let currencies = {
+            gold: 1200000000000,
+            dollar: 3231000000
+        };
+
     </script>
 </body>
 </html
