@@ -1,5 +1,14 @@
 <?php
 include( 'init.php' );
+$name = 'Hamed';
+insert_data( 'users', [
+    'username'      => 'hamed',
+    'password'      => 133211654,
+    'phone'         => '09123456789',
+    'wallet'        => 500,
+    'created_at'    => date('Y-m-d H:i:s')
+] );
+
 
 $success    = '';
 $error      = '';

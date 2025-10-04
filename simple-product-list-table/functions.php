@@ -2,8 +2,7 @@
 
 function insert_data( $table, $data ){
     //INSERT INTO producsts ( title, price ) VALUES ( 'Laptop', '5000' ) 
-
-    
+    global $db;
 
     $sql = 'INSERT INTO ' . $table;
     
@@ -14,20 +13,28 @@ function insert_data( $table, $data ){
     $sql.='( ';
 
     foreach( $data as $key => $value ){
-        $sql.= "'$value',";
+        if( $value === NULL ){
+            $sql.= "NULL,";
+        }else{
+            $sql.= "'$value',";
+        }
     }
     
     $sql = trim( $sql, ',' );
 
     $sql.= ' )';
     
-    //print_r( $data );
-    echo PHP_EOL;
-    die( $sql );
+    $inserted = mysqli_query( $db, $sql );
+
+    if( $inserted ){
+        return mysqli_insert_id( $db );
+    }
+
+    return false;
 
 }
 
-insert_data( 'products', [
-    'title'   => 'lap top',
-    'price'   => '5000'
-] );
+function delete_item( $table, $field, $value ){
+    //DELETE FROM $Table WHERE $field = $value
+    $sql = "DELETE FROM $table WHERE $field = '$value'";
+}

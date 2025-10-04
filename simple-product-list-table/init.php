@@ -11,3 +11,4 @@ $product_statuses = [
 ];
 
 include( 'libs/jdf.php' );
+include( 'functions.php' );
