@@ -1,0 +1,1 @@
+2025-11-08 16:33:55: Column 'updated_at' cannot be null => SQL: INSERT INTO users( username, password, status, created_at, updated_at )  VALUES ( 'hamed','lkjasldkfj','active','2025-11-08 16:33:55',NULL )
