@@ -4,9 +4,12 @@ class User{
     public $ID;
     public $username;
     public $password;
-    public $status = 'active';
+    private $status = 'active';
     public $created_at;
     public $updated_at;
+
+    public $phone;
+    public $name;
 
     public function __construct( $user_id ){
         
@@ -26,6 +29,62 @@ class User{
         
     }
 
+    protected function set_password( $pass ){
+
+        db_update(
+            'usres',
+            [
+                'password'  => $this->hash_password( $pass )
+            ],
+            [
+                'ID'        => $this->ID
+            ]
+        );
+
+    }
+
+    public function send_sms($message){
+
+        $base_url   = 'https://edge.ippanel.com/v1';
+        $api_key    = '';
+
+        $send_message_url = $base_url . '/api/send';
+
+
+        $ch = curl_init(  $send_message_url );
+
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, [
+            'Authorization: ' . $api_key,
+            'Content-Type: application/json'
+        ]);
+
+        $data = [
+            'sending_type'  => 'webservice',
+            'from_number'   => '+983000505',
+            'message'       => $message,
+            'params'        => [
+                'recipients'    => [
+                    $this->phone
+                ]
+            ]   
+        ];
+
+        curl_setopt( $ch, CURLOPT_POSTFIELDS, json_encode( $data ) );
+
+        $result = curl_exec( $ch );
+
+        curl_close($ch);
+
+        $result = json_decode( $result );
+
+        print_r( $result );
+
+
+
+    }
+
     public function save(){
 
         $this->created_at = date('Y-m-d H:i:s');
@@ -33,7 +92,7 @@ class User{
 
         $data = [
             'username'      => $this->username,
-            'password'      => $this->hash_password(),
+            'password'      => $this->hash_password( $this->password ),
             'status'        => $this->status,
             'created_at'    => $this->created_at,
             'updated_at'    => $this->updated_at,
@@ -60,8 +119,8 @@ class User{
 
     }
 
-    private function hash_password(){
-        return md5( $this->password . 'akjsdflkajsdlkfjad' );
+    private function hash_password( $password ){
+        return md5( $password . 'akjsdflkajsdlkfjad' );
     }
 
 }

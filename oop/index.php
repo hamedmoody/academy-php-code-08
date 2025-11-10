@@ -1,6 +1,7 @@
 <?php
 include( 'init.php' );
 include( 'User.php' );
+include( 'Teacher.php' );
 
 // $user = new User();
 // $user->username = 'hamed';
@@ -9,7 +10,6 @@ include( 'User.php' );
 
 $user_id = 2;
 
-$user = new User( 2 );
-$user->status = 'block';
-$user->username = 'ALimOoidijalksjdflkas';
-$user->save();
+$teacher = new Teacher( 2 );
+$teacher->send_sms( 'خوش آمدید' );
+
